@@ -1,6 +1,5 @@
 {
   "name": "purge-workflow-runs",
-  "version": "1.0.0",
   "description": "Delete github workflow runs for workflows that have been removed from the repository.",
   "main": "dist/index.js",
   "scripts": {
@@ -8,15 +7,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/otto-contentfactory/gh-action_delete-workflow-runs.git"
+    "url": "git+https://github.com/otto-contentfactory/purge-workflow-runs.git"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": ["github action", "gh-action", "nodejs", "workflow management"],
+  "author": "hanseartic",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/otto-contentfactory/gh-action_delete-workflow-runs/issues"
+    "url": "https://github.com/otto-contentfactory/purge-workflow-runs/issues"
   },
-  "homepage": "https://github.com/otto-contentfactory/gh-action_delete-workflow-runs#readme",
+  "homepage": "https://github.com/otto-contentfactory/purge-workflow-runs#readme",
   "dependencies": {
     "@actions/core": "^1.8.2",
     "@actions/github": "^5.0.3",
