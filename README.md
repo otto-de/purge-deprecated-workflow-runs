@@ -1,15 +1,14 @@
-# purge-workflow-runs v1
+# purge-workflow-runs
 
 This action removes action runs from a repository when the defining action
 was removed.
 
 ## Inputs
-### 1. `token`
-#### Required: YES
-#### Default: `${{ github.token }}`
-The token used to authenticate.
-* Using **`github.token`** usually works, unless the actions are not scoped with `repo` rights. More details, see the [**`GITHUB_TOKEN`**](https://docs.github.com/en/free-pro-team@latest/actions/reference/authentication-in-a-workflow).
-* If the workflow has issues, you may need to use a personal access token (PAT) that must have the **`repo`** scope. More details, see "[Creating a personal access token](https://docs.github.com/en/free-pro-team@latest/github/authenticating-to-github/creating-a-personal-access-token)".
+
+- `token` - The token used to authenticate (defaults to `github.token`)
+
+- Using **`github.token`** usually works, unless the actions are not scoped with `repo` rights. More details, see the [**`GITHUB_TOKEN`**](https://docs.github.com/en/free-pro-team@latest/actions/reference/authentication-in-a-workflow).
+- If the workflow has issues, you may need to use a personal access token (PAT) that must have the **`repo`** scope. More details, see "[Creating a personal access token](https://docs.github.com/en/free-pro-team@latest/github/authenticating-to-github/creating-a-personal-access-token)".
 
 ## Example usage
 
