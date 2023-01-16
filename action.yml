@@ -10,7 +10,7 @@ inputs:
     default: '${{ github.token }}'
 runs:
   using: node16
-  main: index.js
+  main: dist/index.js
 branding:
   icon: trash-2
   color: yellow
