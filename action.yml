@@ -1,4 +1,4 @@
-name: Remove obsolete github workflow runs
+name: Purge deprecated workflow runs
 description: >-
   Delete github workflow runs that don't have a corresponding workflow (anymore) from the
   current repository.
