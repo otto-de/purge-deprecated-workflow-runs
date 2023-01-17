@@ -1,4 +1,4 @@
-# purge-workflow-runs
+# purge-deprecated-workflow-runs
 
 This action removes action runs from a repository when the defining action
 was removed.
@@ -21,7 +21,7 @@ jobs:
     purge_obsolete_workflows:
         runs-on: ubuntu-latest
         steps:
-            - uses: otto-contentfactory/purge-workflow-runs@v1
+            - uses: otto-de/purge-deprecated-workflow-runs@v1
               with:
                 token: ${{ github.token }}
 ```
