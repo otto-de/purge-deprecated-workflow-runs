@@ -1,16 +1,16 @@
 name: Purge deprecated workflow runs
 description: >-
-  Delete github workflow runs that don't have a corresponding workflow (anymore) from the
-  current repository.
+  Delete github workflow runs that don't have a corresponding workflow (anymore)
+  from the current repository.
 author: hanseartic
 inputs:
   token:
     description: The token to authenticate on the repository
     required: true
-    default: '${{ github.token }}'
+    default: ${{ github.token }}
 runs:
   using: node16
-  main: index.js
+  main: dist/index.js
 branding:
   icon: trash-2
   color: yellow
