@@ -6,8 +6,16 @@ author: hanseartic
 inputs:
   token:
     description: The token to authenticate on the repository
-    required: true
+    required: false
     default: '${{ github.token }}'
+  remove-obsolete:
+    description: Remove obsolete (there is no definition anymore) workflow runs
+    required: false
+    default: true
+  remove-skipped:
+    description: Remove skipped workflow runs
+    required: false
+    default: false
 runs:
   using: node16
   main: index.js
