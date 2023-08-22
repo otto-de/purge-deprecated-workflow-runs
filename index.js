@@ -7,7 +7,12 @@ const run = async () => {
     try {
         const token = core.getInput('token');
         const deleteObsolete = core.getBooleanInput('remove-obsolete') ?? true
-        const deleteSkipped = core.getBooleanInput('remove-skipped') ?? false
+        let deleteSkipped = false
+        try {
+            deleteSkipped = core.getBooleanInput('remove-skipped') ?? false
+        } catch {
+            deleteSkipped = core.getMultilineInput('remove-skipped')
+        }
         const {owner, repo} = github.context.repo;
         const octokit = new Octokit({auth: token});
 
@@ -28,7 +33,12 @@ const run = async () => {
                 owner: owner,
                 per_page: 100,
             },
-            page => page.data.map(run => ({id: run.id, workflow_id: run.workflow_id, conclusion: run.conclusion}))
+            page => page.data.map(run => ({
+                conclusion: run.conclusion,
+                id: run.id,
+                name: run.name,
+                workflow_id: run.workflow_id,
+            }))
         )
         const idsToDelete = []
         if (deleteObsolete) {
@@ -37,7 +47,10 @@ const run = async () => {
             idsToDelete.push(...workflowRunsWithoutWorkflow.map(run => run.id))
         }
         if (deleteSkipped) {
-            const skippedWorkflowRuns = workflowRuns.filter(run => run.conclusion === 'skipped')
+            const skippedWorkflowRuns = workflowRuns.filter(run => {
+                if (run.conclusion !== 'skipped') { return false }
+                return deleteSkipped === true || deleteSkipped.includes(run.name)
+            })
             core.info(`Found ${skippedWorkflowRuns.length} skipped workflow runs.`);
             idsToDelete.push(...skippedWorkflowRuns.map(run => run.id))
         }
