@@ -58,9 +58,9 @@ filter can be applied to deleted workflow runs by status/conclusion - see input 
 
 ## Example usage
 
-### Remove skipped workflows
+### Remove failed workflows
 ```yaml
-name: Purge deprecated workflow runs
+name: Scheduled purge of failed workflow runs
 on:
   schedule:
     - cron: '54 0 * * 0'
@@ -71,7 +71,7 @@ jobs:
       - uses: otto-de/purge-deprecated-workflow-runs@v1
         with:
           remove-obsolete: false
-          remove-skipped: true
+          remove-failed: true
 ```
 
 ### Advanced usage
@@ -89,10 +89,15 @@ jobs:
     steps:
       - uses: otto-de/purge-deprecated-workflow-runs@v1
         with:
+          # disable default-behaviour of deleting orphaned runs
           remove-obsolete: false
-          # remove failed runs of *all* workflows
-          remove-failed: true
-          # remove skipped runs with matching name
+          # remove previously cancelled runs of *all* workflows
+          remove-cancelled: true
+          # remove failed runs of *this* workflow
+          remove-failed: |
+            ${{ github.workflow }}
+          # remove previously skipped runs of workflows with given names
           remove-skipped: |
-            Manage Deployments
+            Unit Tests
+            Deploy
 ```
