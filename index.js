@@ -3,15 +3,25 @@ const github = require('@actions/github');
 const { Octokit } = require('@octokit/rest');
 
 
+const getInput = (name, fallback = undefined) => {
+    try {
+        return core.getBooleanInput(name) ?? fallback
+    } catch {
+        const ml = core.getMultilineInput(name)
+        return ml.length ? ml : fallback
+    }
+}
+
 const run = async () => {
     try {
-        const token = core.getInput('token');
-        const deleteObsolete = core.getBooleanInput('remove-obsolete') ?? true
-        let deleteSkipped = false
-        try {
-            deleteSkipped = core.getBooleanInput('remove-skipped') ?? false
-        } catch {
-            deleteSkipped = core.getMultilineInput('remove-skipped')
+        const token = core.getInput('token') || process.env.GITHUB_TOKEN;
+        const deleteObsolete = getInput('remove-obsolete', true)
+        const deleteByStatus = {
+            // property names must match workflow run conclusions:
+            // see: https://docs.github.com/en/rest/actions/workflow-runs?apiVersion=2022-11-28#list-workflow-runs-for-a-repository
+            cancelled: getInput('remove-cancelled', false),
+            failure: getInput('remove-failed', false),
+            skipped: getInput('remove-skipped', false),
         }
         const {owner, repo} = github.context.repo;
         const octokit = new Octokit({auth: token});
@@ -46,13 +56,16 @@ const run = async () => {
             core.info(`Found ${workflowRunsWithoutWorkflow.length} obsolete workflow runs.`);
             idsToDelete.push(...workflowRunsWithoutWorkflow.map(run => run.id))
         }
-        if (deleteSkipped) {
-            const skippedWorkflowRuns = workflowRuns.filter(run => {
-                if (run.conclusion !== 'skipped') { return false }
-                return deleteSkipped === true || deleteSkipped.includes(run.name)
-            })
-            core.info(`Found ${skippedWorkflowRuns.length} skipped workflow runs.`);
-            idsToDelete.push(...skippedWorkflowRuns.map(run => run.id))
+
+        for (const status in deleteByStatus) {
+            if (deleteByStatus[status]) {
+                const IdsToDeleteByStatus = workflowRuns.filter(run => {
+                    if (run.conclusion !== status) { return false }
+                    return deleteByStatus[status] === true || deleteByStatus[status].includes(run.name)
+                })
+                core.info(`Found ${IdsToDeleteByStatus.length} workflow runs with status [${status}].`);
+                idsToDelete.push(...IdsToDeleteByStatus.map(run => run.id))
+            }
         }
 
         const uniqueRunIdsToDelete = [...new Set(idsToDelete)]

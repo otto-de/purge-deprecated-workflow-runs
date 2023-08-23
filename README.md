@@ -1,16 +1,17 @@
-# 🧹 *Purge deprecated workflow runs* action [![Unit Test](https://github.com/otto-de/purge-deprecated-workflow-runs/actions/workflows/test.yml/badge.svg)](https://github.com/otto-de/purge-deprecated-workflow-runs/actions/workflows/test.yml)
+# 🧹 *Purge workflow runs* action [![Unit Test](https://github.com/otto-de/purge-deprecated-workflow-runs/actions/workflows/test.yml/badge.svg)](https://github.com/otto-de/purge-deprecated-workflow-runs/actions/workflows/test.yml)
 
-
-This action removes action runs from a repository when the defining action
-was removed.
+This GH action removes action runs from a repository. By default, obsolete workflow runs are deleted. Additional
+filter can be applied to deleted workflow runs by status/conclusion - see input parameters below for details.
 
 ## Inputs
 
-| Name              | Description                    | Default               | Optional |
-|-------------------|--------------------------------|-----------------------|----------|
-| `token`           | The token used to authenticate | `${{ github.token }}` | `true`   |
-| `remove-obsolete` | Remove obsolete workflows      | `true`                | `true`   |
-| `remove-skipped`  | Remove skipped workflows       | `false`               | `true`   |
+| Name               | Description                    | Default               | Optional |
+|--------------------|--------------------------------|-----------------------|----------|
+| `token`            | The token used to authenticate | `${{ github.token }}` | `true`   |
+| `remove-obsolete`  | Remove obsolete workflows      | `true`                | `true`   |
+| `remove-cancelled` | Remove cancelled workflows     | `false`               | `true`   |
+| `remove-failed`    | Remove failed workflows        | `false`               | `true`   |
+| `remove-skipped`   | Remove skipped workflows       | `false`               | `true`   |
 
 ### remarks on the input fields
 <dl>
@@ -28,6 +29,22 @@ was removed.
 <dd>
 
 - All workflows that don't have a matching definition anymore will be deleted
+</dd>
+<dt>
+
+`remove-cancelled`</dt>
+<dd>
+
+- Remove workflows from the list that have been cancelled earlier
+- Accepts either a boolean or a multiline `string`. Each line will be matched against the workflow's `name`. On match the run will be removed.
+</dd>
+<dt>
+
+`remove-failed`</dt>
+<dd>
+
+- Remove workflows from the list that have failed earlier
+- Accepts either a boolean or a multiline `string`. Each line will be matched against the workflow's `name`. On match the run will be removed.
 </dd>
 <dt>
 
@@ -53,13 +70,12 @@ jobs:
     steps:
       - uses: otto-de/purge-deprecated-workflow-runs@v1
         with:
-          token: ${{ github.token }}
           remove-obsolete: false
           remove-skipped: true
 ```
 
-### Remove skipped workflows by name
-This will trigger a run of this workflow each time a deployment status changes.
+### Advanced usage
+The example below will trigger a run of this workflow each time a deployment status changes.
 All runs until `success` will be skipped and then cleaned up in the `success` case:
 ```yaml
 name: Manage Deployments
@@ -67,14 +83,16 @@ on:
   deployment_status:
 
 jobs:
-  clean_skipped_deployment_status_tasks:
+  clean_unfinished_deployment_status_tasks:
     runs-on: ubuntu-latest
     if: github.event.deployment_status.state == 'success'
     steps:
       - uses: otto-de/purge-deprecated-workflow-runs@v1
         with:
-          token: ${{ github.token }}
           remove-obsolete: false
+          # remove failed runs of *all* workflows
+          remove-failed: true
+          # remove skipped runs with matching name
           remove-skipped: |
             Manage Deployments
 ```
