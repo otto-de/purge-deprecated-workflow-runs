@@ -19,6 +19,8 @@ jobs:
           cache: 'npm'
       - run: npm ci
       - run: npm run build
-      - uses: JasonEtco/build-and-tag-action@v2
+      - uses: teunmooij/github-versioned-release@v1
+        with:
+          template: 'javascript-action'
         env:
           GITHUB_TOKEN: ${{ github.token }}
