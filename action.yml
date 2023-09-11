@@ -1,7 +1,7 @@
 name: Purge workflow runs
 description: >-
-  Delete github workflow runs that don't have a corresponding workflow (anymore) from the
-  current repository. Optionally delete cancelled, failed or skipped workflow runs.
+  Delete GH workflow runs that don't have a definition (anymore).
+  Optionally delete cancelled, failed or skipped runs.
 author: hanseartic
 inputs:
   token:
