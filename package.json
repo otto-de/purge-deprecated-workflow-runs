@@ -3,7 +3,8 @@
   "description": "Delete github workflow runs that don't have a corresponding workflow (anymore) from the current repository.",
   "main": "dist/index.js",
   "scripts": {
-    "build": "npx @vercel/ncc build && npx convert-action"
+    "build": "npx @vercel/ncc build",
+    "postbuild": "sed 's+index.js+dist/index.js+g' action.yml > action.yml.built && mv action.yml.built action.yml"
   },
   "repository": {
     "type": "git",
