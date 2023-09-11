@@ -3,6 +3,9 @@
 This GH action removes action runs from a repository. By default, obsolete workflow runs are deleted. Additional
 filter can be applied to deleted workflow runs by status/conclusion - see input parameters below for details.
 
+## Deprecation note
+`node16` reached EOL. Please upgrade to version `2.x` of this action which uses `node20`; `1.x` won't be receiving updates/fixes.
+
 ## Inputs
 
 | Name               | Description                    | Default               | Optional |

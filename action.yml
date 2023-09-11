@@ -12,18 +12,22 @@ inputs:
     description: Remove obsolete (there is no definition anymore) workflow runs
     required: false
     default: true
+    deprecationMessage: node16 is EOL. Please upgrade to v2 of this action
   remove-cancelled:
     description: Remove cancelled workflow runs
     required: false
     default: false
+    deprecationMessage: node16 is EOL. Please upgrade to v2 of this action
   remove-failed:
     description: Remove failed workflow runs
     required: false
     default: false
+    deprecationMessage: node16 is EOL. Please upgrade to v2 of this action
   remove-skipped:
     description: Remove skipped workflow runs
     required: false
     default: false
+    deprecationMessage: node16 is EOL. Please upgrade to v2 of this action
 runs:
   using: node16
   main: index.js
