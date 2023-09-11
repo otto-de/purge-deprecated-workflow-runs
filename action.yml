@@ -7,7 +7,7 @@ inputs:
   token:
     description: The token to authenticate on the repository
     required: false
-    default: '${{ github.token }}'
+    default: ${{ github.token }}
   remove-obsolete:
     description: Remove obsolete (there is no definition anymore) workflow runs
     required: false
@@ -25,7 +25,7 @@ inputs:
     required: false
     default: false
 runs:
-  using: node16
+  using: node20
   main: index.js
 branding:
   icon: trash-2

@@ -12,12 +12,16 @@ on:
 jobs:
   # test action works running from the graph
   test:
+    name: "Test /w node v${{ matrix.version }}"
     runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        version: [20]
     steps:
       - uses: actions/checkout@v3
       - uses: actions/setup-node@v3
         with:
-          node-version: 16
+          node-version: ${{ matrix.version }}
           cache: 'npm'
       - run: npm ci
       - uses: ./
