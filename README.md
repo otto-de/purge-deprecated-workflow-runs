@@ -126,9 +126,9 @@ jobs:
             Deploy
 ```
 
-The following example will remove all workflow runs that are older than 1 month and all runs of the current workflow older than 1 day:
+The following example will remove all workflow runs that are older than 4 weeks and all runs of the current workflow older than 1 day:
 ```yaml
-name: Weekly purge of workflow runs older than a month
+name: Weekly purge of workflow runs older than a week
 on:
   schedule:
     - cron: '0 0 * * 0'
@@ -140,6 +140,6 @@ jobs:
         - uses: otto-de/purge-deprecated-workflow-runs@v2
           with:
             remove-older-than: |
-              1m *
+              4w *
               1d ${{ github.workflow }}
 ```
