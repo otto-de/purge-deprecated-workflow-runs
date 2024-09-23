@@ -1,16 +1,18 @@
 const core = require('@actions/core');
 const github = require('@actions/github');
 const { Octokit } = require('@octokit/rest');
+const { extract: extractOlderThanInMs, filterWorkflowRuns: filterWorkflowRunsOlderThan} = require('./process_older_than');
 
-
-const getInput = (name, fallback = undefined) => {
+const getInput = (name, fallback = undefined, extractor = (data) => data) => {
     try {
-        return core.getBooleanInput(name) ?? fallback
+        return extractor(core.getBooleanInput(name) ?? fallback)
     } catch {
-        const ml = core.getMultilineInput(name)
+        const ml = core.getMultilineInput(name).map(extractor).filter(Boolean)
         return ml.length ? ml : fallback
     }
 }
+
+const run2Id = (run) => run.id
 
 const run = async () => {
     try {
@@ -23,7 +25,8 @@ const run = async () => {
             failure: getInput('remove-failed', false),
             skipped: getInput('remove-skipped', false),
         }
-        const {owner, repo} = github.context.repo;
+        const deleteOlderThan = getInput('remove-older-than', [], extractOlderThanInMs)
+        const {owner, repo} = github.context.repo
         const octokit = new Octokit({auth: token});
 
         const workflowIds = await (octokit.paginate(
@@ -45,27 +48,37 @@ const run = async () => {
             },
             page => page.data.map(run => ({
                 conclusion: run.conclusion,
+                created_at: run.created_at,
                 id: run.id,
                 name: run.name,
                 workflow_id: run.workflow_id,
             }))
         )
+
         const idsToDelete = []
         if (deleteObsolete) {
-            const workflowRunsWithoutWorkflow = workflowRuns.filter(run => !workflowIds.includes(run.workflow_id));
-            core.info(`Found ${workflowRunsWithoutWorkflow.length} obsolete workflow runs.`);
-            idsToDelete.push(...workflowRunsWithoutWorkflow.map(run => run.id))
+            const workflowRunIdsWithoutWorkflow = workflowRuns
+                .filter(run => !workflowIds.includes(run.workflow_id))
+                .map(run2Id)
+            core.info(`Found ${workflowRunIdsWithoutWorkflow.length} obsolete workflow runs.`)
+            idsToDelete.push(...workflowRunIdsWithoutWorkflow)
         }
 
         for (const status in deleteByStatus) {
             if (deleteByStatus[status]) {
-                const IdsToDeleteByStatus = workflowRuns.filter(run => {
-                    if (run.conclusion !== status) { return false }
-                    return deleteByStatus[status] === true || deleteByStatus[status].includes(run.name)
-                })
-                core.info(`Found ${IdsToDeleteByStatus.length} workflow runs with status [${status}].`);
-                idsToDelete.push(...IdsToDeleteByStatus.map(run => run.id))
+                const idsToDeleteByStatus = workflowRuns
+                    .filter(run => {
+                        if (run.conclusion !== status) { return false }
+                        return deleteByStatus[status] === true || deleteByStatus[status].includes(run.name)
+                    })
+                    .map(run2Id)
+                core.info(`Found ${idsToDeleteByStatus.length} workflow runs with status [${status}].`);
+                idsToDelete.push(...idsToDeleteByStatus)
             }
+        }
+
+        if (deleteOlderThan.length) {
+            idsToDelete.push(...filterWorkflowRunsOlderThan(workflowRuns, deleteOlderThan).map(run2Id))
         }
 
         const uniqueRunIdsToDelete = [...new Set(idsToDelete)]
@@ -79,8 +92,8 @@ const run = async () => {
             .then(() => core.info("Removed run with id: " + run_id))
         ));
     } catch (error) {
-        core.error(error);
+        core.error(error)
     }
-};
+}
 
-run();
+run()

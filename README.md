@@ -5,15 +5,18 @@ filter can be applied to deleted workflow runs by status/conclusion - see input 
 
 ## Inputs
 
-| Name               | Description                    | Default               | Optional |
-|--------------------|--------------------------------|-----------------------|----------|
-| `token`            | The token used to authenticate | `${{ github.token }}` | `true`   |
-| `remove-obsolete`  | Remove obsolete workflows      | `true`                | `true`   |
-| `remove-cancelled` | Remove cancelled workflows     | `false`               | `true`   |
-| `remove-failed`    | Remove failed workflows        | `false`               | `true`   |
-| `remove-skipped`   | Remove skipped workflows       | `false`               | `true`   |
+| Name                | Description                           | Default               | Is optional |
+|---------------------|---------------------------------------|-----------------------|-------------|
+| `token`             | The token used to authenticate        | `${{ github.token }}` | `true`      |
+| `remove-obsolete`   | Remove obsolete workflows             | `true`                | `true`      |
+| `remove-cancelled`  | Remove cancelled workflows            | `false`               | `true`      |
+| `remove-failed`     | Remove failed workflows               | `false`               | `true`      |
+| `remove-older-than` | Remove workflows older than timeframe | `<null>`              | `true`      |
+| `remove-skipped`    | Remove skipped workflows              | `false`               | `true`      |
 
-### remarks on the input fields
+### Remarks on the input fields
+All inputs are optional - if any input is not given, the default value will be used.
+
 <dl>
 <dt>
 
@@ -48,6 +51,24 @@ filter can be applied to deleted workflow runs by status/conclusion - see input 
 </dd>
 <dt>
 
+`remove-older-than`</dt>
+<dd>
+
+- Remove workflows from the list that are older than the given timeframe (e.g. '10S', '30M', '12H', '7d', '2w', '1m', '6y')
+- Accepts a (multiline) `string` in the format of `NU [W]` where `N` is a number, `U` is a time unit and optionally `W` is the workflow name.
+  The following units are supported:
+  - `s` for seconds
+  - `m` for minutes
+  - `h` for hours
+  - `d` for days
+  - `w` for weeks
+  - `y` for years
+- When given as a multiline string, each line will be parsed as a separate input
+- When given with `W = *` or without a workflow name, all workflows will be checked
+- When given with a workflow name, only the matching workflows will be checked
+</dd>
+<dt>
+
 `remove-skipped`</dt>
 <dd>
 
@@ -55,6 +76,9 @@ filter can be applied to deleted workflow runs by status/conclusion - see input 
 - Accepts either a boolean or a multiline `string`. Each line will be matched against the workflow's `name`. On match the run will be removed.
 </dd>
 </dl>
+
+> [!IMPORTANT]
+> All given inputs are applied (i.e. combined with a logical `OR`).
 
 ## Example usage
 
@@ -100,4 +124,22 @@ jobs:
           remove-skipped: |
             Unit Tests
             Deploy
+```
+
+The following example will remove all workflow runs that are older than 4 weeks and all runs of the current workflow older than 1 day:
+```yaml
+name: Weekly purge of workflow runs older than a week
+on:
+  schedule:
+    - cron: '0 0 * * 0'
+
+jobs:
+    purge_old_workflows:
+        runs-on: ubuntu-latest
+        steps:
+        - uses: otto-de/purge-deprecated-workflow-runs@v2
+          with:
+            remove-older-than: |
+              4w *
+              1d ${{ github.workflow }}
 ```
