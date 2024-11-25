@@ -1,4 +1,5 @@
-# 🧹 *Purge workflow runs* action [![Unit Test](https://github.com/otto-de/purge-deprecated-workflow-runs/actions/workflows/test.yml/badge.svg)](https://github.com/otto-de/purge-deprecated-workflow-runs/actions/workflows/test.yml)
+# 🧹 *Purge workflow runs* action [![Unit Test](https://github.com/otto-de/purge-deprecated-workflow-runs/actions/workflows/test.yml/badge.svg)](https://github.com/otto-de/purge-deprecated-workflow-runs/actions/workflows/test.yml) ![OSS Lifecycle](https://img.shields.io/osslifecycle?file_url=https%3A%2F%2Fgithub.com%2Fotto-de%2Fpurge-deprecated-workflow-runs%2Fblob%2Fmain%2FOSSMETADATA)
+
 
 This GH action removes action runs from a repository. By default, obsolete workflow runs are deleted. Additional
 filter can be applied to deleted workflow runs by status/conclusion - see input parameters below for details.
