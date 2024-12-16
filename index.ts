@@ -1,29 +1,44 @@
-import core from '@actions/core';
-import github from '@actions/github';
+import * as core from '@actions/core';
+import * as github from '@actions/github';
 import { Octokit } from '@octokit/rest';
-import { extract as extractOlderThanInMs, filterWorkflowRuns as filterWorkflowRunsOlderThan} from './process_older_than.js';
-
-const getInput = (name, fallback = undefined, extractor = (data) => data) => {
-    try {
-        return extractor(core.getBooleanInput(name) ?? fallback)
-    } catch {
-        const ml = core.getMultilineInput(name).map(extractor).filter(Boolean)
-        return ml.length ? ml : fallback
+import {
+    extract as extractOlderThanInMs,
+    filterWorkflowRuns as filterWorkflowRunsOlderThan, WorkflowRun
+} from './process_older_than.js';
+type Extractor<T> = (data: string | boolean) => T
+const getInput = <T, F extends T | T[] = T>(name: string, fallback?: F, extractor?: Extractor<T>): F extends T ? T : T[] => {
+    if (!extractor) {
+        extractor = (data) => data as T
     }
+    if (Array.isArray(fallback)) {
+        const ml = core.getMultilineInput(name).map(extractor).filter(Boolean)
+        return (ml.length ? ml : fallback) as any
+    }
+
+    let input: string | boolean
+    try {
+        input = core.getBooleanInput(name)
+    } catch {
+        input = core.getInput(name)
+    }
+    if (!input) {
+        return fallback as any
+    }
+    return extractor(input) as any
 }
 
-const run2Id = (run) => run.id
+const run2Id = (run: WorkflowRun): number => run.id
 
 const run = async () => {
     try {
         const token = core.getInput('token') || process.env.GITHUB_TOKEN;
-        const deleteObsolete = getInput('remove-obsolete', true)
-        const deleteByStatus = {
+        const deleteObsolete = getInput<boolean>('remove-obsolete', true)
+        const deleteByConclusion = {
             // property names must match workflow run conclusions:
             // see: https://docs.github.com/en/rest/actions/workflow-runs?apiVersion=2022-11-28#list-workflow-runs-for-a-repository
-            cancelled: getInput('remove-cancelled', false),
-            failure: getInput('remove-failed', false),
-            skipped: getInput('remove-skipped', false),
+            cancelled: getInput<boolean | string[], boolean>('remove-cancelled', false),
+            failure: getInput<boolean | string[], boolean>('remove-failed', false),
+            skipped: getInput<boolean | string[], boolean>('remove-skipped', false),
         }
         const deleteOlderThan = getInput('remove-older-than', [], extractOlderThanInMs)
         const {owner, repo} = github.context.repo
@@ -55,7 +70,7 @@ const run = async () => {
             }))
         )
 
-        const idsToDelete = []
+        const idsToDelete: number[] = []
         if (deleteObsolete) {
             const workflowRunIdsWithoutWorkflow = workflowRuns
                 .filter(run => !workflowIds.includes(run.workflow_id))
@@ -64,15 +79,16 @@ const run = async () => {
             idsToDelete.push(...workflowRunIdsWithoutWorkflow)
         }
 
-        for (const status in deleteByStatus) {
-            if (deleteByStatus[status]) {
+        for (const conclusion in deleteByConclusion) {
+            const conclusionValue = deleteByConclusion[conclusion as keyof typeof deleteByConclusion]
+            if (conclusionValue) {
                 const idsToDeleteByStatus = workflowRuns
                     .filter(run => {
-                        if (run.conclusion !== status) { return false }
-                        return deleteByStatus[status] === true || deleteByStatus[status].includes(run.name)
+                        if (run.conclusion !== conclusion) { return false }
+                        return conclusionValue === true || (run.name && conclusionValue.includes(run.name))
                     })
                     .map(run2Id)
-                core.info(`Found ${idsToDeleteByStatus.length} workflow runs with status [${status}].`);
+                core.info(`Found ${idsToDeleteByStatus.length} workflow runs with status [${conclusion}].`);
                 idsToDelete.push(...idsToDeleteByStatus)
             }
         }
@@ -81,7 +97,7 @@ const run = async () => {
             idsToDelete.push(...filterWorkflowRunsOlderThan(workflowRuns, deleteOlderThan).map(run2Id))
         }
 
-        const uniqueRunIdsToDelete = [...new Set(idsToDelete)]
+        const uniqueRunIdsToDelete = Array.from(new Set(idsToDelete))
         await Promise.all(uniqueRunIdsToDelete.map(run_id => octokit.request(
             "DELETE /repos/{owner}/{repo}/actions/runs/{run_id}",
             {
@@ -92,8 +108,9 @@ const run = async () => {
             .then(() => core.info("Removed run with id: " + run_id))
         ));
     } catch (error) {
-        core.error(error)
+        core.info('Error occurred: ' + JSON.stringify({error}))
+        core.error(JSON.stringify({error}))
     }
 }
 
-run()
+void run()
