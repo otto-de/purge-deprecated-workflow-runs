@@ -2,6 +2,7 @@
   "name": "purge-deprecated-workflow-runs",
   "description": "Delete github workflow runs that don't have a corresponding workflow (anymore) from the current repository. Optionally delete cancelled, failed or skipped workflow runs.",
   "main": "dist/index.js",
+  "type": "module",
   "scripts": {
     "build": "npx @vercel/ncc build",
     "postbuild": "sed 's+index.js+dist/index.js+g' action.yml > action.yml.built && mv action.yml.built action.yml",
