@@ -1,7 +1,7 @@
-const core = require('@actions/core');
-const github = require('@actions/github');
-const { Octokit } = require('@octokit/rest');
-const { extract: extractOlderThanInMs, filterWorkflowRuns: filterWorkflowRunsOlderThan} = require('./process_older_than');
+import core from '@actions/core';
+import github from '@actions/github';
+import { Octokit } from '@octokit/rest';
+import { extract as extractOlderThanInMs, filterWorkflowRuns as filterWorkflowRunsOlderThan} from './process_older_than.js';
 
 const getInput = (name, fallback = undefined, extractor = (data) => data) => {
     try {

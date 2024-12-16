@@ -24,6 +24,7 @@ jobs:
           node-version: ${{ matrix.version }}
           cache: 'npm'
       - run: npm ci
+      - run: npm run build
       - uses: ./
         with:
           token: ${{ github.token }}

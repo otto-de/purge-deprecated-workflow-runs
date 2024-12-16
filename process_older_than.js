@@ -7,7 +7,7 @@ const durationUnitToMs = {
     y: 31536000000,
 }
 
-const extract = (data) => {
+export const extract = (data) => {
     const [since, ...nameSlices] = data.split(' ')
     const workflowName = nameSlices.length
         ? nameSlices.join(' ')
@@ -26,7 +26,7 @@ const extract = (data) => {
     }
 }
 
-const filterWorkflowRuns = (workflowRuns, extractedOlderThanList) => {
+export const filterWorkflowRuns = (workflowRuns, extractedOlderThanList) => {
     const now = new Date()
     const olderThan = extractedOlderThanList
         .map((since) => ({
@@ -43,9 +43,4 @@ const filterWorkflowRuns = (workflowRuns, extractedOlderThanList) => {
                 return new Date(run.created_at) < extractedInput.deleteOlderThanDate
             })
         )
-}
-
-module.exports = {
-    extract,
-    filterWorkflowRuns,
 }
