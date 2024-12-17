@@ -1,7 +1,7 @@
 name: Purge deprecated workflow runs
 description: >-
-  Delete GH workflow runs that don't have a definition (anymore).
-  Optionally delete cancelled, failed, outdated or skipped runs.
+  Delete GH workflow runs that don't have a definition (anymore). Optionally
+  delete cancelled, failed, outdated or skipped runs.
 author: hanseartic
 inputs:
   token:
