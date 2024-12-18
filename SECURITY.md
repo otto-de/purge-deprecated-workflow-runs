@@ -4,10 +4,10 @@
 
 For the following versions reported vulnerabilities will be assessed
 
-| Version | Supported                     |
-| ------- | ----------------------------- |
-| 1.x     | :negative_squared_cross_mark: |
-| 2.x     | :white_check_mark:            |
+| Version | Supported |
+| ------- | --------- |
+| 1.x     | 🛑        |
+| 2.x     | 🟢        |
 
 ## Reporting a Vulnerability
 

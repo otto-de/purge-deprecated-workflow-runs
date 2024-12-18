@@ -16,7 +16,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        version: [20]
+        version: [20, 22]
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -28,3 +28,27 @@ jobs:
       - uses: ./
         with:
           token: ${{ github.token }}
+          remove-older-than: |
+            2d
+
+  test_guard:
+    name: Test Action guard
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+      - uses: ./
+        with:
+          token: ${{ github.token }}
+        id: run-guard
+        continue-on-error: true
+      - if: ${{ (success() || failure()) && steps.run-guard.outcome == 'failure' }}
+        run: |
+          echo "Guard failed as expected"
+      - if: ${{ (success() || failure()) && steps.run-guard.outcome != 'failure' }}
+        run: |
+          echo "Guard did not fail as expected"
+          exit 1
