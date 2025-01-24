@@ -7,11 +7,11 @@ jobs:
   purge_obsolete_workflows:
     runs-on: ubuntu-latest
     steps:
-      - uses: otto-de/purge-deprecated-workflow-runs@v2
+      - uses: otto-de/purge-deprecated-workflow-runs@v3.0.0
         with:
           token: ${{ github.token }}
-      - uses: otto-de/purge-deprecated-workflow-runs@v2
+          remove-obsolete: true
+      - uses: otto-de/purge-deprecated-workflow-runs@v3.0.0
         with:
           token: ${{ github.token }}
-          remove-obsolete: false
           remove-older-than: 30d
