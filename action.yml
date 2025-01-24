@@ -11,7 +11,7 @@ inputs:
   remove-obsolete:
     description: Remove obsolete (there is no definition anymore) workflow runs
     required: false
-    default: true
+    default: false
   remove-cancelled:
     description: Remove cancelled workflow runs
     required: false
