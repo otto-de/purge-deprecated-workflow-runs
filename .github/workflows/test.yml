@@ -2,6 +2,8 @@
 # Run unit test and the action itself
 ##
 name: Unit Test
+permissions:
+  contents: read
 on:
   pull_request:
   push:
