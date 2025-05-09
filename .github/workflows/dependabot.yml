@@ -6,16 +6,16 @@ on:
     branches:
       - 'main'
 
-jobs:
-  review-dependabot-pr:
-    runs-on: ubuntu-latest
-    permissions:
-      pull-requests: write
-      contents: write
-    steps:
-      - uses: otto-ec/m4-delivery_gh_actions/dependabot-review@eb02d63eda71cdea9d6089fd44191dabaf074f51
-        if: github.event.pull_request.user.login == 'dependabot[bot]'
-        with:
-          auto-approve: minor
-          auto-merge-type: squash
-          token: ${{ secrets.EC_TOKEN }}
+#jobs:
+#  review-dependabot-pr:
+#    runs-on: ubuntu-latest
+#    permissions:
+#      pull-requests: write
+#      contents: write
+#    steps:
+#      - uses: otto-ec/m4-delivery_gh_actions/dependabot-review@eb02d63eda71cdea9d6089fd44191dabaf074f51
+#        if: github.event.pull_request.user.login == 'dependabot[bot]'
+#        with:
+#          auto-approve: minor
+#          auto-merge-type: squash
+#          token: ${{ secrets.EC_TOKEN }}
