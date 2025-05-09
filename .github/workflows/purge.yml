@@ -1,4 +1,8 @@
 name: Purge workflow runs
+permissions:
+  contents: read
+  actions: write
+  
 on:
   workflow_dispatch:
   schedule:
