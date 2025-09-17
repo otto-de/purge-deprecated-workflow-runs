@@ -27,7 +27,7 @@
     "@octokit/rest": "^22.0.0"
   },
   "devDependencies": {
-    "@types/node": "^22.15.20",
+    "@types/node": "^24.5.1",
     "typescript": "^5.8.3"
   }
 }
