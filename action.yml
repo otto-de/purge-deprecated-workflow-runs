@@ -29,8 +29,8 @@ inputs:
     required: false
     default: false
 runs:
-  using: node20
-  main: dist/index.js
+  using: node24
+  main: index.guard.js
 branding:
   icon: trash-2
   color: yellow

@@ -5,7 +5,7 @@
   "scripts": {
     "prebuild": "rm -rf dist",
     "build": "npx @vercel/ncc build index.ts",
-    "postbuild": "npx convert-action",
+    "postbuild": "npx convert-action && sed -i 's/using: node20/using: node24/' action.yml",
     "guard:build": "npx @vercel/ncc build index.guard.ts --minify -o index.guard && cp index.guard/index.js index.guard.js",
     "pretest": "tsc",
     "test": "node --test tests/*.test.js"
@@ -27,7 +27,7 @@
     "@octokit/rest": "^22.0.0"
   },
   "devDependencies": {
-    "@types/node": "^22.15.20",
+    "@types/node": "^24.6.2",
     "typescript": "^5.9.3"
   }
 }
