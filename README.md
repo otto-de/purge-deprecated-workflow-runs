@@ -98,7 +98,7 @@ jobs:
   purge_obsolete_workflows:
     runs-on: ubuntu-latest
     steps:
-      - uses: otto-de/purge-deprecated-workflow-runs@v3
+      - uses: otto-de/purge-deprecated-workflow-runs@v4
         with:
           remove-obsolete: true
           remove-failed: true
@@ -117,7 +117,7 @@ jobs:
     runs-on: ubuntu-latest
     if: github.event.deployment_status.state == 'success'
     steps:
-      - uses: otto-de/purge-deprecated-workflow-runs@v3
+      - uses: otto-de/purge-deprecated-workflow-runs@v4
         with:
           # remove all orphaned workflow runs
           remove-obsolete: true
@@ -144,7 +144,7 @@ jobs:
     purge_old_workflows:
         runs-on: ubuntu-latest
         steps:
-        - uses: otto-de/purge-deprecated-workflow-runs@v3
+        - uses: otto-de/purge-deprecated-workflow-runs@v4
           with:
             remove-older-than: |
               # any workflow runs older than four weeks
