@@ -5,7 +5,7 @@
   "scripts": {
     "prebuild": "rm -rf dist",
     "build": "npx @vercel/ncc build index.ts",
-    "postbuild": "npx convert-action && sed -i 's/using: node20/using: node24/' action.yml",
+    "postbuild": "perl -i -pe 's/main: index\\.guard\\.js/main: dist\\/index.js/' action.yml",
     "guard:build": "npx @vercel/ncc build index.guard.ts --minify -o index.guard && cp index.guard/index.js index.guard.js",
     "pretest": "tsc",
     "test": "node --test tests/*.test.js"

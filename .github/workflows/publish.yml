@@ -6,7 +6,7 @@ on:
 
 jobs:
 #  format-release-notes:
-#    if: ${{ always() }}
+#    if: ${{ always() }}
 #    needs: [build]
 #    permissions:
 #      contents: write
@@ -16,7 +16,7 @@ jobs:
 #      - uses: otto-ec/m4-delivery_gh_actions/release-notes@79378c00eb1e630f7567b1d0a463308fbd10e702
 #        continue-on-error: true
 #        with:
-#          token: ${{ secrets.EC_TOKEN }}
+#          token: ${{ secrets.EC_TOKEN }}
 
   build:
     runs-on: ubuntu-latest
