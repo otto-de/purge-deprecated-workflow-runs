@@ -23,7 +23,7 @@
   "homepage": "https://github.com/otto-de/purge-deprecated-workflow-runs#readme",
   "dependencies": {
     "@actions/core": "^1.11.1",
-    "@actions/github": "^6.0.1",
+    "@actions/github": "^8.0.0",
     "@octokit/rest": "^22.0.1"
   },
   "devDependencies": {
