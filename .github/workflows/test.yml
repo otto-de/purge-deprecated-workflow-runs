@@ -3,7 +3,8 @@
 ##
 name: Unit Test
 permissions:
-  contents: write
+  contents: read
+  actions: write
 on:
   pull_request:
   push:
