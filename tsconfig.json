@@ -1,12 +1,9 @@
 {
   "compilerOptions": {
-    "target": "esnext",
-    "module": "NodeNext",
-    "moduleResolution": "nodenext",
+    "target": "es2025",
+    "module": "ESNext",
     "rewriteRelativeImportExtensions": true,
     "allowJs": false,
-    "allowSyntheticDefaultImports": false,
-    "esModuleInterop": false,
     "forceConsistentCasingInFileNames": true,
     "strict": true,
     "noImplicitAny": true,
@@ -14,6 +11,8 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "allowUnreachableCode": false,
-    "skipLibCheck": true
+    "skipLibCheck": true,
+    "rootDir": ".",
+    "types": ["node"]
   }
 }
