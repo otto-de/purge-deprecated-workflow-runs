@@ -4,9 +4,9 @@
   "type": "module",
   "scripts": {
     "prebuild": "rm -rf dist",
-    "build": "npx @vercel/ncc build index.ts",
+    "build": "npm x @vercel/ncc build -- index.ts",
     "postbuild": "perl -i -pe 's/main: index\\.guard\\.js/main: dist\\/index.js/' action.yml",
-    "guard:build": "npx @vercel/ncc build index.guard.ts --minify -o index.guard && cp index.guard/index.js index.guard.js",
+    "guard:build": "npm x @vercel/ncc build -- index.guard.ts --minify -o index.guard && cp index.guard/index.js index.guard.js",
     "pretest": "tsc",
     "test": "node --test tests/*.test.js"
   },
@@ -28,6 +28,7 @@
   },
   "devDependencies": {
     "@types/node": "^26.0.1",
+    "@vercel/ncc": "^0.44.0",
     "typescript": "^6.0.3"
   }
 }
