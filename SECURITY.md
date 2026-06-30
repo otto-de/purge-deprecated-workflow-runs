@@ -5,9 +5,11 @@
 For the following versions reported vulnerabilities will be assessed
 
 | Version | Supported |
-| ------- | --------- |
+|---------| --------- |
 | 1.x     | 🛑        |
-| 2.x     | 🟢        |
+| 2.x     | 🛑        |
+| 3.x     | 🛑        |
+| 4.x     | 🟢        |
 
 ## Reporting a Vulnerability
 
